@@ -5,22 +5,16 @@
 
 ###Technologies utilisés:
 
-*Framework Express 4
-
-*Socket.io (Pour les Web Sockets)
-
-*BusBoy (Pour l'upload d'images)
-
-*EasyImage (Pour la compression/Redimension des images)
-
-*Password-Hash (Pour le Hashing avec Grain de Sel des mots de passes)
-
-*Divers MiddleWares d'Express Pour variables de Session, Parsing des request bodies etc..
+* Framework Express 4
+* Socket.io (Pour les Web Sockets)
+* BusBoy (Pour l'upload d'images)
+* EasyImage (Pour la compression/Redimension des images)
+* Password-Hash (Pour le Hashing avec Grain de Sel des mots de passes)
+* Divers MiddleWares d'Express Pour variables de Session, Parsing des request bodies etc..
 
 ###Profil
 
-*Possibilité de changer de couleur de pseudonyme.
-
-*Possibilité de choisir un Avatar.
+* Possibilité de changer de couleur de pseudonyme.
+* Possibilité de choisir un Avatar.
 
 ![Alt text](screenshots/profil.png?raw=true "Profil Page")
