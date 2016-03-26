@@ -1,0 +1,23 @@
+extends layout
+
+block content
+
+    div(class='modal' id='logModal')
+        div(class='modal-content')
+            h5 Connexion
+            div(class="input-field")
+                input(id='username' type='text')
+                label(for='username') Username
+            div(class="input-field")
+                input(id='password' type='password')
+                label(for='password') Password
+            a(id='connectBtn' class='waves-effect waves-light btn') Valider
+    p Bienvenue sur un Chat développé en Node JS !
+    div(class='row')
+        div(id='chatWindow' class='col s9')
+        div(id='members' class='col s1')
+    div(class='row')
+        div(id='answerArea col s12')
+            input(id='message' type='text'  placeholder='Message..' class='col s7')
+            a(id='send' type='button' class='col s1 waves-effect waves-light btn')
+                i(class="fa fa-comment") 

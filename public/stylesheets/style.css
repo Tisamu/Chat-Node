@@ -1,0 +1,56 @@
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+nav {
+    background-color: #29B1A4;
+}
+nav .button-collapse {
+    margin-left: 2%;
+}
+
+a {
+    color: #00B7FF;
+}
+
+#chatWindow {
+    height: 20em;
+    overflow-y: auto;
+    word-wrap: break-word;
+    border-top: 1px dashed grey;
+    border-bottom: 1px dashed grey;
+    border-right: solid 1px grey;
+}
+
+.thumbnail{
+    width: 2em;
+}
+
+#logDiv {
+    width: 30%;
+    margin: auto;
+    text-align: center;
+}
+
+#members {
+    border-top: 1px dashed grey;
+    border-bottom: 1px dashed grey;
+    border-right: dashed 1px grey;
+    height: 20em;
+    overflow-y: auto;
+}
+
+#profilecontent img{
+    width: 3em;
+}
+
+#userAvatar{
+    width: 3em;
+}
+
+#userAvatar:hover{
+    cursor: pointer;
+}

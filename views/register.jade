@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    div(class='container' style='width: 30%;')
+        h5 Enregsitrement d'un nouvel utilisateur
+        div(class='row valign-wrapper')
+            span(class='valign col s4') Nom d'utilisateur: 
+            input(id='username' class='valign center-block' type='text')
+        div(class='row valign-wrapper')
+            span(class='valign col s4') Mot de Passe:
+            input(id='password' class='valign center-block' type='password')
+        input(id='registerBtn' class='waves-effect waves-light btn' type='button' value='Enregistrer')

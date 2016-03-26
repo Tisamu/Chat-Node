@@ -1,0 +1,56 @@
+doctype html
+html
+    head
+        title= title
+        link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src='/socket.io/socket.io.js')
+        script(src='https://code.jquery.com/jquery-2.2.1.min.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js')
+        script(src='/javascripts/main.js')
+
+    body
+        //Header Nav'
+        script.
+                var jadeUsername = '#{username}';
+                var jadeColor = '#{color}';
+
+        nav
+            div(class='nav-wrapper')
+                    a(href='#!' class='brand-logo') Chat
+                    ul(id='nav-computer' class='right hide-on-med-and-down')
+                        li
+                            a(href='/') HOME
+                        - if (username) {
+                        li
+                            a(href='/profile') #{username}
+                        li
+                            a(href='/logout') Se déconnecter
+                        -}
+                        - else {
+                        li
+                            a(class='waves-effect waves-light btn modal-trigger' href='#logModal') Se Connecter
+                        li
+                            a(class='waves-effect waves-light btn' href='/register') S'enregistrer
+                            -}
+                    //Mobile Menu
+                    a(href="#" data-activates="nav-mobile" class="button-collapse")
+                        i(class="fa fa-bars fa-2x")
+                    ul(id='nav-mobile' class='side-nav')
+                        li
+                            a(href='/') HOME
+                        - if (username) {
+                        li
+                            a(href='/profile') #{username}
+                        li
+                            a(href='/logout') Se déconnecter
+                        -}
+                        - else {
+                        li
+                            a(class='waves-effect waves-light btn modal-trigger' href='#logModal') Se Connecter
+                        li
+                            a(class='waves-effect waves-light btn' href='/register') S'enregistrer
+                        -}
+
+        block content

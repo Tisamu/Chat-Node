@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    div(id='profilecontent' class='container' style='width: 20%;')
+        h5 Profile Settings
+        div(class='row valign-wrapper')
+            span(class='valign') Avatar:
+            img(id='userAvatar' class='valign center-block' src='/upload/#{username}.png' onerror="$(this).attr(\'src\',\'/images/noavatar.png\');")
+        form(id='avatarForm' action='/uploadAvatar' method='post', enctype='multipart/form-data')
+            input(id='uploadAvatar' type='file' name='avatar' style='position: absolute; top: -100px;')
+        div(class='row valign-wrapper')
+            span(class='valign') Couleur:	
+            input(id='profileColor' class='valign center-block' type='color')
+        a(href='#' id='updateProfilebtn' class='waves-effect waves-light btn center-block') Enregistrer

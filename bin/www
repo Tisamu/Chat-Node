@@ -1,0 +1,191 @@
+#!/usr/bin/env node
+
+//Useful Functions
+function formatTime() {
+    var date = new Date();
+    var hour = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+
+    return ('[' + hour + ':' + minutes + ':' + seconds + ']');
+}
+
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('nodeTest:server');
+var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+//Make socket.io listen to the server
+var io = require('socket.io').listen(server);
+var users = [];
+
+var url = 'mongodb://localhost:27017/Chat';
+
+io.sockets.on('connection', function (socket) {
+    console.log(formatTime() + 'Client connected.');
+    var MongoClient = require('mongodb').MongoClient;
+    var ObjectId = require('mongodb').ObjectID;
+    MongoClient.connect(url, function (err, db) {
+        if (err === null) {
+            console.log('Connected to Mongo.');
+            getMess(db, function () {
+                db.close();
+            });
+        }
+    });
+
+    var getMess = function (db, callback) {
+        var docs = db.collection('message').find().skip(db.collection('message').count() - 50);
+
+        docs.each(function (err, doc) {
+            if (doc !== null) {
+                socket.emit('message', '<p><img class="thumbnail" src="/upload/' + doc.username + '.png" onerror="$(this).attr(\'src\',\'/images/noavatar.png\');"><b style="color: ' + doc.color + ' ">' + doc.username + '</b>: ' + doc.content + '</p>');
+            }
+        });
+    };
+
+
+    socket.emit('userList', users);
+    socket.broadcast.emit('userList', users);
+
+//    Update user list on Disconnect
+    socket.on('disconnect', function () {
+        if (socket.username) {
+            console.log(socket.username + ' Disconnected');
+            var i = users.indexOf(socket.username);
+            users.splice(i, 1);
+            socket.broadcast.emit('userList', users);
+        }
+
+    });
+
+//    On reception of a message
+//        Use socket.color to determine which color apply
+    socket.on('message', function (data) {
+        console.log(formatTime() + data.pseudo + ': ' + data.message);
+        socket.emit('message', '<p><img class="thumbnail" src="/upload/' + data.pseudo + '.png" onerror="$(this).attr(\'src\',\'/images/noavatar.png\');"><b style="color: ' + socket.color + ' ">' + data.pseudo + '</b>: ' + data.message + '</p>');
+        socket.broadcast.emit('message', '<p><img class="thumbnail" src="/upload/' + data.pseudo + '.png" onerror="$(this).attr(\'src\',\'/images/noavatar.png\');"><b style="color: ' + socket.color + ' ">' + data.pseudo + '</b>: ' + data.message + '</p>');
+
+        var MongoClient = require('mongodb').MongoClient;
+        var ObjectId = require('mongodb').ObjectID;
+        MongoClient.connect(url, function (err, db) {
+            if (err === null) {
+                console.log('Connected to Mongo.');
+                insertMess(db, function () {
+                    db.close();
+                });
+            }
+        });
+
+        var insertMess = function (db, callback) {
+            db.collection('message').insertOne({
+                "username": data.pseudo,
+                "content": data.message,
+                "color": socket.color,
+                "date": formatTime()
+            }, function (err) {
+                if (err === null) {
+                    console.log('New Message registered.');
+                    callback();
+                }
+            });
+        };
+    });
+
+//    Update user List on Connect
+    socket.on('userConnect', function (data) {
+        socket.username = data.username;
+        socket.color = data.color;
+        if (users.indexOf(socket.username) === -1) {
+            users.push(socket.username);
+            socket.broadcast.emit('userList', users);
+            socket.emit('userList', users);
+        }
+
+    });
+
+});
+
+
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}
